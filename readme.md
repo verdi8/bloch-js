@@ -6,11 +6,18 @@ It uses the d3 library, especially the d3-geo functions for spherical shapes ren
 ## Demo
 
 
-## How to use it
+# How to use it
 
-rotateSphereTo()
-Rotates the whole sphere visualization to the given three axes. 
-These axes are not the 
+## Operations
+```
+rotateSphereTo(phi, lambda, gamma)
+```
+Rotates the whole sphere according to around the given three radians angles. 
+Those angles are respectively around the d3/d3-geo 
+
+
+## 
+
 
 
 ## Configuration
