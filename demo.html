@@ -29,19 +29,25 @@
 
     <!-- Bloch Sphere -->
     <link rel="stylesheet" type="text/css" href="src/bloch.css">
-    <script src="src/bloch.js"></script>
+    <script src="dist/bloch.js"></script>
 
     <title>Bloch Sphere JS demo</title>
 </head>
 <body>
 
 
-    <div id="bloch-sphere">
+    <div id="bloch-sphere1">
+    </div>
+    <div id="bloch-sphere2">
     </div>
 
     <script type="text/javascript">
-        var blochSphere = bloch();
-        d3.select("#bloch-sphere").call(blochSphere)
+        var blochSphere1 = bloch();
+        d3.select("#bloch-sphere1").call(blochSphere1)
+
+        // var blochSphere2 = bloch();
+        // d3.select("#bloch-sphere1").call(blochSphere2)
+
     </script>
 
 <!-- Optional JavaScript -->
