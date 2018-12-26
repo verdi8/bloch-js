@@ -9,12 +9,12 @@ export default {
     output: {
         name: 'bloch',
         file: 'dist/bloch.js',
-        format: 'iife',
-        globals: {
-            'd3' : 'd3'
-        }
+        format: 'umd'
+        // globals: {
+        //     'd3' : 'd3'
+        // }
     },
-    external: ['d3'],
+    // external: ['d3'],
     plugins: [
         // commonjs(), // prise en charge de require
         resolve(), // prise en charge des modules depuis node_modules

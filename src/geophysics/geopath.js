@@ -1,4 +1,5 @@
-import {geoProjection} from "./geoprojection";
+import geoProjection from "./geoprojection";
+import * as d3geo from "d3-geo";
 
 /**
  * Creates a d3 path generator for the given distance from the center
@@ -8,7 +9,7 @@ import {geoProjection} from "./geoprojection";
  * @param d the distance from the sphere center
  * @return the d3 path generator object
  */
-export function geoPath(yaw, pitch, roll, d) {
+export default function(yaw, pitch, roll, d) {
     var projection = geoProjection(yaw, pitch, roll, d);
-    return d3.geoPath(projection);
+    return d3geo.geoPath(projection);
 }

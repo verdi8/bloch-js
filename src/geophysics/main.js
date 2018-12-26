@@ -1,7 +1,9 @@
-import {lon, lat, radians, degrees} from "./math"
-import {geoPath} from "./geopath";
-import {geoProjection} from "./geoprojection";
-import * as d3 from "d3"
+import * as geomath from "./geomath"
+import geoPath from "./geopath";
+import geoProjection from "./geoprojection";
+import * as d3geo from "d3-geo"
+import * as d3shape from "d3-shape"
+import * as d3interpolate from "d3-interpolate"
 
 /**
  * Creates the geophysic core with global rotation
@@ -22,7 +24,7 @@ export default function(yaw, pitch, roll) {
          */
         x(d, theta, phi) {
             var projection = geoProjection(yaw, pitch, roll, d);
-            return projection([lon(phi), lat(theta)])[0];
+            return projection([geomath.lon(phi), geomath.lat(theta)])[0];
         },
 
         /**
@@ -34,7 +36,7 @@ export default function(yaw, pitch, roll) {
          */
         y(d, theta, phi) {
             var projection = geoProjection(yaw, pitch, roll, d);
-            return projection([lon(phi), lat(theta)])[1];
+            return projection([geomath.lon(phi), geomath.lat(theta)])[1];
         },
 
         /**
@@ -49,8 +51,8 @@ export default function(yaw, pitch, roll) {
 
         graticulePath(d, step) {
             var path = geoPath(yaw, pitch, roll, d);
-            var graticule = d3.geoGraticule()
-                .step([0, degrees(step)])
+            var graticule = d3geo.geoGraticule()
+                .step([0, geomath.degrees(step)])
                 .precision(2)
                 (); // Generates the MultiLine graticule
             return path(graticule);
@@ -67,7 +69,7 @@ export default function(yaw, pitch, roll) {
          * @param startPhi the theta angle of the starting point
          */
         linePath(endD, endTheta, endPhi, startD = 0, startTheta = 0, startPhi = 0) {
-            var path = d3.line()
+            var path = d3shape.line()
                 .x((d) => this.x(...d))
                 .y((d) => this.y(...d));
             return path([
@@ -85,15 +87,18 @@ export default function(yaw, pitch, roll) {
          */
         anglePath(d, startTheta, startPhi, endTheta, endPhi) {
             var path = geoPath(yaw, pitch, roll, d);
-            var interpolator = d3.interpolateArray(
-                [lon(startPhi), lat(startTheta)],
-                [lon(endPhi), lat(endTheta)]
+            var interpolator = d3interpolate.interpolateArray(
+                [geomath.lon(startPhi), geomath.lat(startTheta)],
+                [geomath.lon(endPhi), geomath.lat(endTheta)]
             );
             var geoCoords = d3.quantize((i) => Array.from(interpolator(i)), 8);
-            return path(
-                { type: 'LineString', coordinates: geoCoords }
-            );
-        }
+            var geoObject = { type: 'LineString', coordinates: geoCoords }
+            // if(path.measure(geoObject) > 0) { // The angle is long enough to be displayed
+            //     return path()
+            // }
+            return path(geoObject);
+        },
+
     }
 
 }

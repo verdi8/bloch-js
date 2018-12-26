@@ -1,5 +1,5 @@
-import {degrees} from "./math";
-import * as d3 from "d3";
+import * as geomath from "./geomath";
+import * as d3geo from "d3-geo";
 
 /**
  * Creates a d3-geo projection for the given distance from the center
@@ -9,9 +9,9 @@ import * as d3 from "d3";
  * @param d the distance from the sphere center
  * @return the d3 projection object
  */
-export function geoProjection(yaw, pitch, roll, d) {
-    return d3.geoOrthographic()
-        .rotate([degrees(yaw), degrees(pitch), degrees(roll)])
+export default function(yaw, pitch, roll, d) {
+    return d3geo.geoOrthographic()
+        .rotate([geomath.degrees(yaw), geomath.degrees(pitch), geomath.degrees(roll)])
         .translate([0, 0])
         .center([0, 0])
         .precision(0.5)
