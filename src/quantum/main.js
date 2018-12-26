@@ -1,13 +1,28 @@
 import * as math from "mathjs"
+import qmath from "./qmath";
+
+/*
+ * Mainly inspired by http://www.vcpc.univie.ac.at/~ian/hotlist/qc/talks/bloch-sphere-rotations.pdf
+ */
+
+/**
+ * Constant state matrix for ket-plus
+ */
+export const KET_PLUS = state(math.PI / 2, 0);
+
+/**
+ * Constant state matrix for ket-minus
+ */
+export const KET_MINUS = state(math.PI / 2, math.PI);
 
 /**
  * Gives the density matrix of the quantum state described by the theta and phi angle values
  */
 export function state(theta, phi) {
     return math.eval(`[ 
-            cos(theta/2);
-            e^(phi*i) * sin(theta/2)    
-        ]`, { phi:phi, theta:theta } );
+            cos(theta / 2);
+            e^(phi * i) * sin(theta / 2)    
+        ]`, { theta:theta, phi:phi } );
 }
 
 /**
@@ -29,6 +44,7 @@ export function beta(state) {
  */
 export function theta(state) {
     var a =  alpha(state);
+    console.log(a);
     return math.eval('2 * acos(a)', { a : a });
 }
 
@@ -44,14 +60,25 @@ export function phi(state) {
     return math.eval('log(b / sin(t / 2))', { b: b,  t:t }).im; // Gets the imaginary part as a by-i-division;
 }
 
-export function rotationMatrix(theta, phi, lambda) {
-     return math.eval(`
-       1/2 * [
-               [ 1 + cos(theta),                                      cos(phi) * sin(theta) + i * sin(phi) * sin(theta) ],
-               [ cos(phi) * sin(theta) + i * sin(phi) * sin(theta),   1 - cos(theta) ]
-             ]
-       `
-       ,
-         { phi:phi, theta:theta }
-         );
+/**
+ * Creates a rotation matrix around the Z axis
+ * @param tau the rotation angle
+ */
+export function rz(tau) {
+    return math.eval(`[
+           [ e^(-i tau/2), 0           ],
+           [ 0,            e^(i tau/2) ]
+        ]`, { tau:tau }
+    );
 }
+
+/**
+ * Applies a rotation matrix to a state matrix
+ * @param rotation the rotation matrix
+ * @param state the state matrix
+ */
+export function rotate(rotation, state) {
+    return math.eval('rotation * state', {rotation:rotation, state:state});
+}
+
+

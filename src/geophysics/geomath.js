@@ -1,3 +1,5 @@
+import * as math from "mathjs"
+
 /**
  * Converts a qubit theta angle into a geographic latitude
  * @param theta the theta angle to convert
@@ -31,11 +33,11 @@ export var theta = (lat) => radians(180 - lon);
  * @param radians the radians angle value
  * @return {number} the degrees angle value
  */
-export var degrees = (rad) => rad * 180 / Math.PI;
+export var degrees = (rad) => rad * 180 / math.PI;
 
 /**
  * Converts a degrees angle value int a radians angle vlue
  * @param degrees the degrees angle value
  * @return {number} the radians angle value
  */
-export var radians = (deg) => deg * Math.PI / 180;
+export var radians = (deg) => deg * mat.PI / 180;

@@ -32,4 +32,60 @@ describe('In Quantum module', function() {
         });
     });
 
+    describe('rz function', function() {
+        it('should create a valid zero rotation matrix about the Z axis', function() {
+            var rz = quantum.rz(0);
+            var rz11 = math.subset(rz, math.index(0, 0));
+            var rz12 = math.subset(rz, math.index(0, 1));
+            var rz21 = math.subset(rz, math.index(1, 0));
+            var rz22 = math.subset(rz, math.index(1, 1));
+            assert.isTrue(rz11.equals(math.complex('1')));
+            assert.equal(rz12, 0);
+            assert.equal(rz21, 0);
+            assert.isTrue(rz22.equals(math.complex('1')));
+        });
+
+        it('should create a valid pi rotation matrix about the Z axis', function() {
+            var rz = quantum.rz(math.PI);
+            var rz11 = math.subset(rz, math.index(0, 0));
+            var rz12 = math.subset(rz, math.index(0, 1));
+            var rz21 = math.subset(rz, math.index(1, 0));
+            var rz22 = math.subset(rz, math.index(1, 1));
+            assert.isTrue(rz11.equals(math.complex('-i')));
+            assert.equal(rz12, 0);
+            assert.equal(rz21, 0);
+            assert.isTrue(rz22.equals(math.complex('i')));
+        });
+
+        it('should create a valid pi/3 rotation matrix about the Z axis', function() {
+            var rz = quantum.rz(math.PI/3);
+            var rz11 = math.subset(rz, math.index(0, 0));
+            var rz12 = math.subset(rz, math.index(0, 1));
+            var rz21 = math.subset(rz, math.index(1, 0));
+            var rz22 = math.subset(rz, math.index(1, 1));
+
+            assert.equal(rz11.re, math.cos(math.PI/6));
+            assert.equal(rz11.im, -math.sin(math.PI/6));
+            assert.equal(rz12, 0);
+            assert.equal(rz21, 0);
+            assert.equal(rz22.re, math.cos(math.PI/6));
+            assert.equal(rz22.im, math.sin(math.PI/6));
+        });
+
+    });
+
+    describe('rotate function', function() {
+        it('should rotate a ket-plus state to a ket-minus state', function () {
+            var ketPlus = quantum.state(math.PI / 2, 0);
+            console.log(quantum.theta(ketPlus));
+
+            var rz = quantum.rz(math.PI);
+
+            var ketMinus = quantum.rotate(rz,  ketPlus);
+            console.log(ketMinus.toString());
+
+
+        });
+    });
+
 });

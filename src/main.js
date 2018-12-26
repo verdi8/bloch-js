@@ -1,6 +1,7 @@
 import geophysics from './geophysics/main';
 import * as configurator from "./configurator";
 import * as d3selection from "d3-selection"
+import * as math from "mathjs"
 
 /**
  * Creates a bloch sphere
@@ -282,18 +283,18 @@ export default function (selection) {
 
             // X axis (theta=π/2 and phi=0)
             svg.select(".x-axis > .axis-line")
-                .attr("d", gp.linePath(axeslength, Math.PI / 2, 0));
+                .attr("d", gp.linePath(axeslength, math.PI / 2, 0));
             svg.select(".x-axis > .axis-label")
-                .attr("x", gp.x(axeslength + 15, Math.PI / 2, 0))
-                .attr("y", gp.y(axeslength + 15, Math.PI / 2, 0))
+                .attr("x", gp.x(axeslength + 15, math.PI / 2, 0))
+                .attr("y", gp.y(axeslength + 15, math.PI / 2, 0))
                 .text(this.currentConfig.axes.x.label);
 
             // Y axis (theta=π/2 and phi=π/2)
             svg.select(".y-axis > .axis-line")
-                .attr("d", gp.linePath(axeslength, Math.PI / 2, Math.PI / 2));
+                .attr("d", gp.linePath(axeslength, math.PI / 2, math.PI / 2));
             svg.select(".y-axis > .axis-label")
-                .attr("x", gp.x(axeslength + 15, Math.PI / 2, Math.PI / 2))
-                .attr("y", gp.y(axeslength + 15, Math.PI / 2, Math.PI / 2))
+                .attr("x", gp.x(axeslength + 15, math.PI / 2, math.PI / 2))
+                .attr("y", gp.y(axeslength + 15, math.PI / 2, math.PI / 2))
                 .text(this.currentConfig.axes.y.label);
 
             // Z axis (theta=0 and phi=0)
@@ -307,7 +308,7 @@ export default function (selection) {
             // Sets the state
             // The projections
             var pr = Math.sin(this.currentConfig.state.theta) * r;
-            var ptheta = Math.PI / 2;
+            var ptheta = math.PI / 2;
             var pphi = this.currentConfig.state.phi;
 
             svg.select(".state-xy-projection-line")
@@ -322,7 +323,7 @@ export default function (selection) {
 
             // The phi angle
             svg.select(".phi-angle-line")
-                .attr("d", gp.anglePath(r / 3, Math.PI / 2, 0, Math.PI / 2, this.currentConfig.state.phi));
+                .attr("d", gp.anglePath(r / 3, math.PI / 2, 0, math.PI / 2, this.currentConfig.state.phi));
 
             // The state
             svg.select(".state-line")
@@ -355,8 +356,8 @@ export default function (selection) {
             var point = d3selection.mouse(sphere.node());
             var dx = point[0] - originX;
             var dy = point[1] - originY;
-            bloch.rotateSphereTo(originYaw - (dx * Math.PI / 300), // We consider that a 1px mouse move will rotate the sphere by a few percent of radian.... very convenient
-                originPitch + (dy * Math.PI / 300),
+            bloch.rotateSphereTo(originYaw - (dx * math.PI / 300), // We consider that a 1px mouse move will rotate the sphere by a few percent of radian.... very convenient
+                originPitch + (dy * math.PI / 300),
                 null);
         }
 
