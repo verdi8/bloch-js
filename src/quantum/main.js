@@ -1,5 +1,5 @@
 import * as math from "mathjs"
-import qmath from "./qmath";
+import {assert} from "chai";
 
 /*
  * Mainly inspired by http://www.vcpc.univie.ac.at/~ian/hotlist/qc/talks/bloch-sphere-rotations.pdf
@@ -8,56 +8,41 @@ import qmath from "./qmath";
 /**
  * Constant state matrix for ket-plus
  */
-export const KET_PLUS = state(math.PI / 2, 0);
+export const KET_PLUS_DENSITY = density(math.PI / 2, 0);
 
 /**
  * Constant state matrix for ket-minus
  */
-export const KET_MINUS = state(math.PI / 2, math.PI);
+export const KET_MINUS_DENSITY = density(math.PI / 2, math.PI);
 
 /**
- * Gives the density matrix of the quantum state described by the theta and phi angle values
+ * Gives the density operator of the quantum state described by the theta and phi angle values
  */
-export function state(theta, phi) {
-    return math.eval(`[ 
-            cos(theta / 2);
-            e^(phi * i) * sin(theta / 2)    
+export function density(theta, phi) {
+    return math.eval(` (1/2) * [ 
+            1 + cos(theta), cos(phi) * sin(theta) - i sin(phi) sin(theta);
+            cos(phi) * sin(theta) + i sin(phi) sin(theta), 1 - cos(theta)    
         ]`, { theta:theta, phi:phi } );
 }
 
 /**
- * Gives the ket-0 coefficient of the state matrix
+ * Gives the theta angle value for a given quantum state
  */
-export function alpha(state) {
-    return math.subset(state, math.index(0, 0));
-}
-
-/**
- * Gives the ket-1 coefficient of the state matrix
- */
-export function beta(state) {
-    return math.subset(state, math.index(1, 0));
+export function theta(density) {
+    var a = math.subset(density, math.index(0, 0));
+    return math.re(math.eval('acos(2 * a - 1)', { a : a }));
 }
 
 /**
  * Gives the theta angle value for a given quantum state
  */
-export function theta(state) {
-    var a =  alpha(state);
-    console.log(a);
-    return math.eval('2 * acos(a)', { a : a });
-}
-
-/**
- * Gives the theta angle value for a given quantum state
- */
-export function phi(state) {
-    var b = beta(state);
-    var t = theta(state);
+export function phi(density) {
+    var t = theta(density);
+    var b = math.subset(density, math.index(0, 1));
     if (t == 0) { // when theta is equal to zero, phi can be any value, so let's decide of zero
         return 0;
     }
-    return math.eval('log(b / sin(t / 2))', { b: b,  t:t }).im; // Gets the imaginary part as a by-i-division;
+    return math.re(math.eval('conj(log(2b / sin(theta)))', { b: b,  theta:t }).im); // Gets the imaginary part as a by-i-division;
 }
 
 /**
@@ -73,12 +58,10 @@ export function rz(tau) {
 }
 
 /**
- * Applies a rotation matrix to a state matrix
+ * Applies a rotation matrix to a density matrix
  * @param rotation the rotation matrix
- * @param state the state matrix
+ * @param density the density matrix
  */
-export function rotate(rotation, state) {
-    return math.eval('rotation * state', {rotation:rotation, state:state});
+export function rotate(rotation, density) {
+    return math.eval('rotation * density * ctranspose(rotation)', { density : density, rotation : rotation});
 }
-
-
