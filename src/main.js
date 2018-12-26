@@ -82,7 +82,7 @@ export default function () {
         xmarker.append("path")
             .attr("d", "M 0 0 L 10 5 L 0 10 z");
 
-        xaxis.append("line")
+        xaxis.append("path")
             .classed("axis-line", true)
             .attr("stroke-width", 2)
             .attr("stroke", "black")
@@ -116,7 +116,7 @@ export default function () {
         ymarker.append("path")
             .attr("d", "M 0 0 L 10 5 L 0 10 z");
 
-        yaxis.append("line")
+        yaxis.append("path")
             .classed("axis-line", true)
             .attr("stroke-width", 2)
             .attr("stroke", "black")
@@ -150,7 +150,7 @@ export default function () {
         zmarker.append("path")
             .attr("d", "M 0 0 L 10 5 L 0 10 z");
 
-        zaxis.append("line")
+        zaxis.append("path")
             .classed("axis-line", true)
             .attr("stroke-width", 2)
             .attr("stroke", "black")
@@ -168,12 +168,12 @@ export default function () {
          * Draws the state
          */
         // The state projections
-        g.append("line")
+        g.append("path")
             .classed("state-xy-projection-line", true)
             .attr("stroke-width", 3)
             .attr("stroke", "orange")
             .attr("stroke-dasharray", 3);
-        g.append("line")
+        g.append("path")
             .classed("state-z-projection-line", true)
             .attr("stroke-width", 3)
             .attr("stroke", "orange")
@@ -214,7 +214,7 @@ export default function () {
             .attr("r", 3)
             .attr("fill", "orange");
 
-        g.append("line")
+        g.append("path")
             .classed("state-line", true)
             .attr("stroke-width", 4)
             .attr("stroke", "orange")
@@ -245,8 +245,8 @@ export default function () {
                 var point = d3.mouse(sphere.node());
                 var dx = point[0] - originX;
                 var dy = point[1] - originY;
-                rotateSphereTo(originYaw - radians(dx), // We consider that a 1px mouse move will rotate the sphere by 1 degree.... very convenient
-                    originPitch + radians(dy),
+                rotateSphereTo(originYaw - (dx * Math.PI / 200), // We consider that a 1px mouse move will rotate the sphere by 1% radian.... very convenient
+                    originPitch + (dy * Math.PI / 200),
                     null);
             }
 
@@ -308,46 +308,43 @@ export default function () {
 
         // X axis (theta=π/2 and phi=0)
         svg.select(".x-axis > .axis-line")
-            .attr("x2", gp.screenX(axeslength, gp.const.axes.x.theta, gp.const.axes.x.phi))
-            .attr("y2", gp.screenY(axeslength, gp.const.axes.x.theta, gp.const.axes.x.phi));
+            .attr("d", gp.linePath(axeslength, Math.PI / 2, 0));
         svg.select(".x-axis > .axis-label")
-            .attr("x", gp.screenX(axeslength + 15, gp.const.axes.x.theta, gp.const.axes.x.phi))
-            .attr("y", gp.screenY(axeslength + 15, gp.const.axes.x.theta, gp.const.axes.x.phi))
+            .attr("x", gp.x(axeslength + 15, Math.PI / 2, 0))
+            .attr("y", gp.y(axeslength + 15, Math.PI / 2, 0))
             .text(currentConfig.axes.x.label);
 
         // Y axis (theta=π/2 and phi=π/2)
         svg.select(".y-axis > .axis-line")
-            .attr("x2", gp.screenX(axeslength,gp.const.axes.y.theta, gp.const.axes.y.phi))
-            .attr("y2", gp.screenY(axeslength, gp.const.axes.y.theta, gp.const.axes.y.phi));
+            .attr("d", gp.linePath(axeslength, Math.PI / 2, Math.PI / 2));
         svg.select(".y-axis > .axis-label")
-            .attr("x", gp.screenX(axeslength + 15, gp.const.axes.y.theta, gp.const.axes.y.phi))
-            .attr("y", gp.screenY(axeslength + 15, gp.const.axes.y.theta, gp.const.axes.y.phi))
+            .attr("x", gp.x(axeslength + 15, Math.PI / 2, Math.PI / 2))
+            .attr("y", gp.y(axeslength + 15, Math.PI / 2, Math.PI / 2))
             .text(currentConfig.axes.y.label);
 
         // Z axis (theta=0 and phi=0)
         svg.select(".z-axis > .axis-line")
-            .attr("x2", gp.screenX(axeslength, gp.const.axes.z.theta, gp.const.axes.z.phi))
-            .attr("y2", gp.screenY(axeslength, gp.const.axes.z.theta, gp.const.axes.z.phi));
+            .attr("d", gp.linePath(axeslength, 0, 0));
         svg.select(".z-axis > .axis-label")
-            .attr("x", gp.screenX(axeslength + 15, gp.const.axes.z.theta, gp.const.axes.z.phi))
-            .attr("y", gp.screenY(axeslength + 15, gp.const.axes.z.theta, gp.const.axes.z.phi))
+            .attr("x", gp.x(axeslength + 15, 0, 0))
+            .attr("y", gp.y(axeslength + 15, 0, 0))
             .text(currentConfig.axes.z.label);
 
         // Sets the state
         // The projections
+        var pr = Math.sin(currentConfig.state.theta) * r;
+        var ptheta = Math.PI / 2;
+        var pphi = currentConfig.state.phi;
+
         svg.select(".state-xy-projection-line")
-            .attr("x2", gp.screenX(Math.sin(currentConfig.state.theta) * r, Math.PI / 2, currentConfig.state.phi))
-            .attr("y2", gp.screenY(Math.sin(currentConfig.state.theta) * r, Math.PI / 2, currentConfig.state.phi));
+            .attr("d", gp.linePath(pr, ptheta, pphi));
+
         svg.select(".state-z-projection-line")
-            .attr("x1", gp.screenX(r, currentConfig.state.theta, currentConfig.state.phi))
-            .attr("y1", gp.screenY(r, currentConfig.state.theta, currentConfig.state.phi))
-            .attr("x2", gp.screenX(Math.sin(currentConfig.state.theta) * r, Math.PI / 2, currentConfig.state.phi))
-            .attr("y2", gp.screenY(Math.sin(currentConfig.state.theta) * r, Math.PI / 2, currentConfig.state.phi));
+            .attr("d", gp.linePath( r, currentConfig.state.theta, currentConfig.state.phi, pr, ptheta, pphi));
 
         // The theta angle
         svg.select(".theta-angle-line")
-            .datum({ type: 'LineString', coordinates: interpolatedCoordinates( [lon(currentConfig.state.phi), lat(0)], [lon(currentConfig.state.phi), lat(currentConfig.state.theta)] ) })
-            .attr("d", d3.geoPath(projectsOn(r / 3)));
+            .attr("d", gp.anglePath(r / 3, 0, currentConfig.state.phi, currentConfig.state.theta, currentConfig.state.phi));
 
         // The phi angle
         if(Math.sin(currentConfig.state.theta) < 0.001) { // Nearly ('cause of floating point approximation) no projection on the XY plane, no need to display the phi agngle
@@ -357,15 +354,13 @@ export default function () {
 
         } else {
             svg.select(".phi-angle-line")
-                .datum({ type: 'LineString', coordinates: interpolatedCoordinates( [lon(0), lat(Math.PI / 2)], [lon(currentConfig.state.phi), lat(Math.PI / 2)] ) })
-                .attr("d", d3.geoPath(projectsOn(r / 3)));
+                .attr("d", gp.anglePath(r / 3, Math.PI / 2, 0, Math.PI / 2, currentConfig.state.phi));
 
         }
 
         // The state
         svg.select(".state-line")
-            .attr("x2", gp.screenX(r, currentConfig.state.theta, currentConfig.state.phi))
-            .attr("y2", gp.screenY(r, currentConfig.state.theta, currentConfig.state.phi));
+            .attr("d", gp.linePath(r, currentConfig.state.theta, currentConfig.state.phi))
 
     }
 
@@ -386,6 +381,9 @@ export default function () {
         if (currentConfig.state.phi < 0) {
             currentConfig.state.phi = currentConfig.state.phi + 2 * Math.PI;
         }
+
+        // Limits the global rotation
+        currentConfig.sphere.rotation.yaw = Math.max(-Math.PI / 4,  currentConfig.sphere.rotation.yaw);
     }
 
 // Control functions
@@ -415,88 +413,6 @@ export default function () {
     function pauliX() {
 
 
-    }
-
-
-// Math functions
-
-    /**
-     * Converts a radians angle value into a degrees angle value
-     * @param radians the radians angle value
-     * @return {number} the degrees angle value
-     */
-    function degrees(radians) {
-        return radians * 180 / Math.PI;
-    }
-
-    /**
-     * Converts a degrees angle value int a radians angle vlue
-     * @param degrees the degrees angle value
-     * @return {number} the radians angle value     */
-    function radians(degrees) {
-        return degrees * Math.PI / 180;
-    }
-
-    /**
-     * Converts a qubit theta angle into a geographic latitude
-     * @param theta the theta angle to convert
-     * @return {number} the latitude
-     */
-    function lat(theta) {
-        return 90 - degrees(theta);
-    }
-
-    /**
-     * Converts a qubit phi angle into a geographic longitude
-     * @param phi the phi angle to convert
-     * @return {number} the longitude
-     */
-    function lon(phi) {
-        return 180 - degrees(phi);
-    }
-
-    /**
-     * Converts a geographic longitude into a qubit phi angle
-     * @param lon the longitude to convert (in degrees)
-     * @return {number} the phi angle (in radians)
-     */
-    function phi(lon) {
-        return radians(180 - lon);
-    }
-
-    /**
-     * Converts a geographic longitude into a qubit phi angle
-     * @param lon the longitude to convert (in degrees)
-     * @return {number} the phi angle (in radians)
-     */
-    function theta(lat) {
-        return radians(180 - lon);
-    }
-
- 
-
-    /**
-     * Create a 3d-geo projection for the given distance from the center
-     * @param d the distance from the center in pixels
-     */
-    function projectsOn(d) {
-        return d3.geoOrthographic()
-            .rotate([degrees(currentConfig.sphere.rotation.yaw), degrees(currentConfig.sphere.rotation.pitch), degrees(currentConfig.sphere.rotation.roll)])
-            .translate([0, 0])
-            .center([0, 0])
-            .precision(0.5)
-            .clipAngle(180)
-            .scale(d);
-    }
-
-    function interpolatedCoordinates(startCoordinates, endCoordinates) {
-        var interpolator = d3.interpolateArray(startCoordinates, endCoordinates);
-        return d3.quantize(
-            function (i) {
-                return Array.from(interpolator(i));
-            },
-            8
-        )
     }
 
     return chart;
