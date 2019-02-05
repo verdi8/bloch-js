@@ -1,5 +1,5 @@
 import * as math from "mathjs"
-import {assert} from "chai";
+import * as qmath from "./qmath"
 
 /*
  * Mainly inspired by http://www.vcpc.univie.ac.at/~ian/hotlist/qc/talks/bloch-sphere-rotations.pdf
@@ -7,61 +7,71 @@ import {assert} from "chai";
 
 /**
  * Constant state matrix for ket-plus
+ * @type {{theta, phi, rz, rotate}}
  */
-export const KET_PLUS_DENSITY = density(math.PI / 2, 0);
+export const KET_PLUS = state(math.PI / 2, 0);
 
 /**
  * Constant state matrix for ket-minus
+ * @type {{theta, phi, rz, rotate}}
  */
-export const KET_MINUS_DENSITY = density(math.PI / 2, math.PI);
+export const KET_MINUS = state(math.PI / 2, math.PI);
 
 /**
- * Gives the density operator of the quantum state described by the theta and phi angle values
+ * Creates a state represented by a theta and phi angle
+ * @param {number} theta the theta angle
+ * @param {number} phi the phi angle
+ * @return {{theta: theta, phi: phi, rz: rz, rotate: rotate}}
  */
-export function density(theta, phi) {
-    return math.eval(` (1/2) * [ 
-            1 + cos(theta), cos(phi) * sin(theta) - i sin(phi) sin(theta);
-            cos(phi) * sin(theta) + i sin(phi) sin(theta), 1 - cos(theta)    
-        ]`, { theta:theta, phi:phi } );
-}
+export function state(theta, phi) {
+    var normalized = qmath.normalize(theta, phi);
+    return {
 
-/**
- * Gives the theta angle value for a given quantum state
- */
-export function theta(density) {
-    var a = math.subset(density, math.index(0, 0));
-    return math.re(math.eval('acos(2 * a - 1)', { a : a }));
-}
+        /***
+         * Gives the state theta angle
+         * @return {number}
+         */
+        theta : function () {
+            return normalized.theta();
+        },
 
-/**
- * Gives the theta angle value for a given quantum state
- */
-export function phi(density) {
-    var t = theta(density);
-    var b = math.subset(density, math.index(0, 1));
-    if (t == 0) { // when theta is equal to zero, phi can be any value, so let's decide of zero
-        return 0;
+        /***
+         * Gives the state phi angle
+         * @return {number}
+         */
+        phi : function () {
+            return normalized.phi();
+        },
+
+        /**
+         * Rotates the state around the Z axis
+         * @param {number} tau the angle around the Z axis, if not given then a π angle is applied
+         * @return {{theta, phi, rotate}}
+         */
+        rz : function (tau = math.PI) {
+            return this.rotate(qmath.rz(tau));
+        },
+
+        /**
+         * Rotates the state and gives a new rotated state
+         * @param {math.Matrix} rotation the rotation matrix to appli
+         * @return {{theta, phi, rz, rotate}}
+         */
+        rotate : function(rotation) {
+            var density = qmath.density(theta, phi);
+            var density2 = qmath.rotate(rotation, density);
+            var normalized = qmath.normalize(
+                qmath.theta(density2),
+                qmath.phi(density2)
+            );
+
+            return state(normalized.theta(), normalized.phi());
+        }
+
     }
-    return math.re(math.eval('conj(log(2b / sin(theta)))', { b: b,  theta:t }).im); // Gets the imaginary part as a by-i-division;
 }
 
-/**
- * Creates a rotation matrix around the Z axis
- * @param tau the rotation angle
- */
-export function rz(tau) {
-    return math.eval(`[
-           [ e^(-i tau/2), 0           ],
-           [ 0,            e^(i tau/2) ]
-        ]`, { tau:tau }
-    );
-}
 
-/**
- * Applies a rotation matrix to a density matrix
- * @param rotation the rotation matrix
- * @param density the density matrix
- */
-export function rotate(rotation, density) {
-    return math.eval('rotation * density * ctranspose(rotation)', { density : density, rotation : rotation});
-}
+
+
+
