@@ -19,7 +19,7 @@ export function density(theta, phi) {
  * @return {number}
  */
 export function theta(density) {
-    var a = math.subset(density, math.index(0, 0));
+    var a = round(math.subset(density, math.index(0, 0)));
     return math.re(math.eval('acos(2 * a - 1)', { a : a }));
 }
 
@@ -30,11 +30,11 @@ export function theta(density) {
  */
 export function phi(density) {
     var t = theta(density);
-    var b = math.subset(density, math.index(0, 1));
+    var b = round(math.subset(density, math.index(0, 1)));
     if (t == 0) { // when theta is equal to zero, phi can be any value, so let's decide of zero
         return 0;
     }
-    return math.re(math.eval('conj(log(2b / sin(theta)))', { b: b,  theta:t }).im); // Gets the imaginary part as a by-i-division;
+    return math.re(math.eval('conj(log(2b / sin(theta)))', { b: b,  theta:t }).im); // Gets the imaginary
 }
 
 /**
@@ -55,7 +55,6 @@ export function normalize(theta, phi) {
     if (phi < 0) {
         phi = phi + 2 * math.PI;
     }
-
     theta = mod2pi(theta);
     phi = mod2pi(phi);
     return {
@@ -87,6 +86,30 @@ export function rotate(rotation, density) {
 }
 
 /**
+ * Creates a rotation matrix around the X axis
+ * @param tau the rotation angle
+ */
+export function rx(tau) {
+    return math.eval(`[
+           [ cos(tau / 2)  , - i sin(tau / 2) ],
+           [ - i sin(tau/2), cos(tau / 2)     ]
+        ]`, { tau:tau }
+    );
+}
+
+/**
+ * Creates a rotation matrix around the Y axis
+ * @param tau the rotation angle
+ */
+export function ry(tau) {
+    return math.eval(`[
+           [ cos(tau / 2), - sin(tau / 2) ],
+           [ sin(tau/2)  , cos(tau / 2)   ]
+        ]`, { tau:tau }
+    );
+}
+
+/**
  * Creates a rotation matrix around the Z axis
  * @param tau the rotation angle
  */
@@ -98,6 +121,8 @@ export function rz(tau) {
     );
 }
 
+
+
 // Private function
 
 /**
@@ -106,5 +131,14 @@ export function rz(tau) {
  * @return {number}
  */
 function mod2pi(angle) {
-    return math.mod(angle, 2 * math.PI) // math.js mod function does the job better than javascript native %
+    return math.mod(round(angle), 2 * math.PI) // math.js mod function does the job better than javascript native %
+}
+
+/**
+ * Normalizes any angle, that is keeps it between 0 and 2π
+ * @param {number} angle the angle ton normalize
+ * @return {number}
+ */
+function round(value) {
+    return math.round(value, 15);
 }

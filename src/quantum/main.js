@@ -6,6 +6,18 @@ import * as qmath from "./qmath"
  */
 
 /**
+ * Constant state matrix for ket-zero
+ * @type {{theta, phi, rz, rotate}}
+ */
+export const KET_ZERO = state(0, 0);
+
+/**
+ * Constant state matrix for ket-one
+ * @type {{theta, phi, rz, rotate}}
+ */
+export const KET_ONE = state(math.PI, 0);
+
+/**
  * Constant state matrix for ket-plus
  * @type {{theta, phi, rz, rotate}}
  */
@@ -44,6 +56,24 @@ export function state(theta, phi) {
         },
 
         /**
+         * Rotates the state around the X axis
+         * @param {number} tau the angle around the X axis, if not given then a π angle is applied
+         * @return {{theta, phi, rotate}}
+         */
+        rx : function (tau = math.PI) {
+            return this.rotate(qmath.rx(tau));
+        },
+
+        /**
+         * Rotates the state around the Y axis
+         * @param {number} tau the angle around the Y axis, if not given then a π angle is applied
+         * @return {{theta, phi, rotate}}
+         */
+        ry : function (tau = math.PI) {
+            return this.rotate(qmath.ry(tau));
+        },
+
+        /**
          * Rotates the state around the Z axis
          * @param {number} tau the angle around the Z axis, if not given then a π angle is applied
          * @return {{theta, phi, rotate}}
@@ -64,7 +94,6 @@ export function state(theta, phi) {
                 qmath.theta(density2),
                 qmath.phi(density2)
             );
-
             return state(normalized.theta(), normalized.phi());
         }
 
