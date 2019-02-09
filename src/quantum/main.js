@@ -74,7 +74,25 @@ export function state(theta, phi) {
         },
 
         /**
-         * Rotates the state around the Z axis
+         * Creates a rotator function of the state around the X axis
+         * @param {number} tau the angle around the X axis, if not given then a π angle is applied
+         * @return {{theta, phi, rotate}}
+         */
+        rx : function (tau = math.PI) {
+            return this.rotate(qmath.rx(tau));
+        },
+
+        /**
+         * Creates a rotator function of the state around the Y axis
+         * @param {number} tau the angle around the Y axis, if not given then a π angle is applied
+         * @return {{theta, phi, rotate}}
+         */
+        ry : function (tau = math.PI) {
+            return this.rotate(qmath.ry(tau));
+        },
+
+        /**
+         * Creates a rotator function of the state around the Z axis
          * @param {number} tau the angle around the Z axis, if not given then a π angle is applied
          * @return {{theta, phi, rotate}}
          */

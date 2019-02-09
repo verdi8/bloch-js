@@ -28,6 +28,7 @@
     <script src="https://d3js.org/d3.v5.js"></script>
 
     <!-- Bloch Sphere -->
+    <link rel="stylesheet" type="text/css" href="demo.css">
     <link rel="stylesheet" type="text/css" href="src/bloch.css">
     <script src="dist/bloch.js"></script>
 
@@ -35,24 +36,56 @@
 </head>
 <body>
 
-
-    <div id="bloch-sphere1">
+<div class="container">
+    <div class="row mx-4">
+        <div class="page-header">
+            <h1>Quantum Notepad<sup class="text-muted">beta</sup></h1>
+            Here you can play with a qubit by applying quantum gates and visualize the result on its animated Bloch Sphere representation.
+        </div>
     </div>
-    <div id="bloch-sphere2">
+    <div class="row mx-4">
+        <div class="col-md-6">
+
+        </div>
+        <div class="col-md-6">
+            <figure class="figure">
+                <div class="d-flex justify-content-center">
+                    <div id="bloch-sphere"></div>
+                </div>
+                <figcaption class="figure-caption">Click and drag the sphere to rotate it for a better view of the quantum state.</figcaption>
+            </figure>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        BlochJS
+                        <small class="mb-2 text-muted">javascript component</small>
+                    </h5>
+                    <p class="card-text">This page is also a demo page for the BlochJS project, an animated Bloch sphere representation as an embeddable javascript component.</p>
+                    <a href="#" class="card-link">Available on GitHub</a>
+                    <a href="#" class="card-link">Look at the full demo page</a>
+                </div>
+            </div>
+        </div>
+
+
+        <script type="text/javascript">
+            var blochSphere = bloch("#bloch-sphere");
+        </script>
     </div>
+</div>
 
-    <script type="text/javascript">
-        var blochSphere1 = bloch("#bloch-sphere1");
 
-        // var blochSphere2 = bloch();
-        // d3.select("#bloch-sphere1").call(blochSphere2)
 
-    </script>
+
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+
+
 </body>
 </html>

@@ -10,7 +10,8 @@ export default {
     output: {
         name: 'bloch',
         file: 'dist/bloch.js',
-        format: 'umd'
+        format: 'umd',
+        sourcemap: true
         // globals: {
         //     'd3' : 'd3'
         // }
@@ -21,7 +22,7 @@ export default {
             {
                 // explicitly specify unresolvable named exports
                 // (see below for more details)
-                namedExports: {'node_modules/mathjs/index.js': ['PI', 'min']},  // Default: undefined
+                namedExports: {'node_modules/mathjs/index.js': ['PI', 'min', 'eval', 'round', 'subset', 'mod', 're', 'index']},  // Default: undefined
             }
 
         ), // prise en charge de require

@@ -7,10 +7,6 @@ import * as math from "mathjs"
 export var defaultConfig = {
     size : 400,
     style : "default",
-    state : {
-        theta : 1 * math.PI / 4,
-        phi : - 1 * math.PI / 4,
-    },
     sphere : {
         rotation : { // The overall sphere rotation : yaw,  pitch, roll, in degrees
             yaw: math.PI / 9, // 20 degrees
@@ -46,20 +42,6 @@ export var defaultConfig = {
  * @param cfg the configuration too adjust
  */
 export function adjust(cfg) {
-    // Adjusts the theta and the phi angles
-    // 0 ⩽ θ ⩽ π
-    cfg.state.theta = cfg.state.theta % (2 * math.PI);
-    if (cfg.state.theta > math.PI) {
-        cfg.state.theta = cfg.state.theta - math.PI;
-        cfg.state.phi = cfg.state.phi + math.PI;
-    }
-
-    // 0 ⩽ φ < 2π
-    cfg.state.phi = cfg.state.phi % (2 * math.PI);
-    if (cfg.state.phi < 0) {
-        cfg.state.phi = cfg.state.phi + 2 * math.PI;
-    }
-
     // Limits the global rotation
     cfg.sphere.rotation.yaw = math.min(
         Math.max(cfg.sphere.rotation.yaw, -math.PI / 2),
